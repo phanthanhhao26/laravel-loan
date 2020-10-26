@@ -44,11 +44,54 @@ class UserLoanController extends Controller
                     'remain_amount' => $userLoan['remain_amount'],
                 ];
 
+                $apiFormat['success'] = true;
                 $apiFormat['msg'] = 'Get loans successfully';
                 $apiFormat['data'] = $userLoanArray;
             }
 
         } catch (\Exception $e) {
+            $apiFormat['msg'] = 'There is error';
+        }
+
+        return response()->json($apiFormat);
+    }
+
+    public function getALoanOfUserById(Request $request, int $loanId)
+    {
+        $apiFormat = [];
+
+        try {
+            $existedLoan = $this->loanInformationRepository->find($loanId);
+            if(!$existedLoan) {
+                return response()->json(['msg' => config('messages.loan.exist.no')]);
+            }
+
+            $userLoanInformation = $this->userLoanInformationRepository->getByFields(
+                [
+                    'user_id' => auth()->user()->id,
+                    'loan_id' => $loanId
+                ]
+            );
+            if (!$userLoanInformation) {
+                return response()->json(['msg' => config('messages.user_loan.exist.no')]);
+            }
+
+            $apiFormat['success'] = true;
+            $apiFormat['msg'] = config('messages.user_loan.apply.successfully');
+            $apiFormat['data'] = [
+                'user_id'          => $userLoanInformation['user_id'],
+                'loan_id'          => $userLoanInformation['loan_id'],
+                'loan_name'        => $existedLoan['name'],
+                'loan_description' => $existedLoan['description'],
+                'start_date'       => date('Y-m-d', strtotime($userLoanInformation['start_date'])),
+                'end_date'         => date('Y-m-d', strtotime($userLoanInformation['end_date'])),
+                'amount_per_week'  => $userLoanInformation['amount_per_week'],
+                'paid_amount'      => $userLoanInformation['paid_amount'],
+                'remain_amount'    => $userLoanInformation['remain_amount'],
+            ];
+
+        } catch (\Exception $e)
+        {
             $apiFormat['msg'] = 'There is error';
         }
 
@@ -73,8 +116,8 @@ class UserLoanController extends Controller
                 'remain_amount'   => $existedLoan['amount'],
             ]);
 
+            $apiFormat['success'] = true;
             $apiFormat['msg'] = config('messages.user_loan.apply.successfully');
-
             $apiFormat['data'] = [
                 'user_id'          => $userLoanInformation['user_id'],
                 'loan_id'          => $userLoanInformation['loan_id'],
@@ -110,7 +153,6 @@ class UserLoanController extends Controller
                     'loan_id' => $loanId
                 ]
             );
-            
             if (!$userLoanInformation) {
                 return response()->json(['msg' => config('messages.user_loan.exist.no')]);
             }
@@ -126,8 +168,8 @@ class UserLoanController extends Controller
                 $userLoanInformation['id']
             );
 
+            $apiFormat['success'] = true;
             $apiFormat['msg'] = config('messages.user_loan.repay.successfully');
-
             $apiFormat['data'] = [
                 'user_id'          => $userLoanInformation['user_id'],
                 'loan_id'          => $userLoanInformation['loan_id'],

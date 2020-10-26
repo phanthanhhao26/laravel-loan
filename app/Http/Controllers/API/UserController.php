@@ -43,6 +43,7 @@ class UserController extends Controller
             ]);
 
             // $apiFormat['status'] = config('constants.STATUS.ACTIVE');
+            $apiFormat['success'] = true;
             $apiFormat['msg'] = config('messages.user.register.successfully');
 
             $apiFormat['data'] = [
@@ -76,6 +77,7 @@ class UserController extends Controller
         }
 
         // $apiFormat['status'] = config('constants.STATUS.ACTIVE');
+        $apiFormat['success'] = true;
         $apiFormat['msg'] = config('messages.user.login.successfully');
 
         $apiFormat['data'] = [

@@ -33,6 +33,7 @@ class LoanController extends Controller
                 ];
             }
 
+            $apiFormat['success'] = true;
             $apiFormat['msg'] = 'Get loans successfully';
             $apiFormat['data'] = $loanArray;
 
@@ -60,9 +61,9 @@ class LoanController extends Controller
                 'period'        => $request->period,
                 'rate_per_week' => $request->rate_per_week,
             ]);
-
+            
+            $apiFormat['success'] = true;
             $apiFormat['msg'] = config('messages.loan.create.successfully');
-
             $apiFormat['data'] = [
                 'name'          => $loan['name'],
                 'description'   => $loan['description'],
@@ -71,6 +72,29 @@ class LoanController extends Controller
                 'rate_per_week' => $loan['rate_per_week'],
             ];
 
+        } catch (\Exception $e) {
+            $apiFormat['msg'] = 'There is error';
+        }
+
+        return response()->json($apiFormat);
+    }
+
+    public function getLoanById(Request $request, int $loanId)
+    {
+        $apiFormat = [];
+
+        try {
+            $loan = $this->loanInformationRepository->find($loanId);
+
+            $apiFormat['success'] = true;
+            $apiFormat['msg'] = config('messages.loan.create.successfully');
+            $apiFormat['data'] = [
+                'name'          => $loan['name'],
+                'description'   => $loan['description'],
+                'amount'        => $loan['amount'],
+                'period'        => $loan['period'],
+                'rate_per_week' => $loan['rate_per_week'],
+            ];
         } catch (\Exception $e) {
             $apiFormat['msg'] = 'There is error';
         }

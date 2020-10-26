@@ -24,9 +24,11 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware('api')->group(function () {
-    Route::get('loans', 'App\Http\Controllers\API\LoanController@getAvailableLoans');
+    Route::get('loan/lists', 'App\Http\Controllers\API\LoanController@getAvailableLoans');
     Route::get('loan/user-loans', 'App\Http\Controllers\API\UserLoanController@getLoansOfUser');
+    Route::get('loan/user-loan/{loanId}', 'App\Http\Controllers\API\UserLoanController@getALoanOfUserById');
     Route::post('loan', 'App\Http\Controllers\API\LoanController@create');
+    Route::get('loan/{loanId}', 'App\Http\Controllers\API\LoanController@getLoanById');
     Route::post('loan/apply/{loanId}', 'App\Http\Controllers\API\UserLoanController@apply');
     Route::put('loan/repay/{loanId}', 'App\Http\Controllers\API\UserLoanController@repay');
 });
